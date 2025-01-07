@@ -72,15 +72,20 @@ data1 <- data %>%
   group_by(Age,Gender) %>% 
   summarise(suma_USD=sum(Purchase.Amount..USD.)) %>%
   ungroup()
+#co ciekawe najwięcej produktów we wszystkich kategoriach kupują mężczyźni
 data1 %>% 
   ggplot(aes(x=Age, y=suma_USD, colour=Gender))+
   geom_point()+
   geom_smooth(method="lm")
 
+# to samo wychodzi tu: w pierwszej 50-tce klientów, którzy wydali najwięcej nie ma ani jednej kobiety
+# pierwsza kobieta pojawia się dopiero na 52 miejscu
+
 data2 <- data %>% 
   group_by(Age,Gender) %>% 
   summarise(suma_poprzednie=sum(Previous.Purchases)) %>%
   ungroup()
+
 data2 %>% 
   ggplot(aes(x=Age, y=suma_poprzednie, colour=Gender))+
   geom_point()+
@@ -98,4 +103,58 @@ data2 %>%
 #7. Raczej też mało istotny wydaje mi się rozmiar tutaj
 #8. Ciekawe może być porównanie dominujących kolorów dla danych grup, albo/i w poszczególnych porach roku
 #9. Plus to w jakim okresie kto więcej wydaje? może z okazji jakichś świąt? Może na walentynki?
+
+ #Pora roku a ilość dokonanych zakupów
+    data_season1 <- data %>% 
+      group_by(Season) %>%  
+      summarise(total_count = n()) %>%  
+      ungroup() 
+                                  #najwięcej zakupów klienci robią: wiosną
+
+#Pora roku a ilość wydanych przez klientów pieniędzy
+    data_season2 <- data %>% 
+      group_by(Season) %>%  
+      summarise(total_spent = sum(Purchase.Amount..USD.)) %>%  
+      ungroup() 
+                                  #najwięcej klienci wydają jesienią
+
+
+#wykresy 'wiek klientów wg metod płatności'
+
+    #wykres boxplot
+ggplot(data, aes(x = Payment.Method, y = Age)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(title = "Wiek klientów wg metody płatności",
+       x = "Metoda płatności",
+       y = "Wiek") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+    #Wykres słupkowy
+ggplot(data, aes(x = Payment.Method, fill = cut(Age, breaks = c(0, 20, 30, 40, 50, 60, 70)))) +
+  geom_bar(width = 0.6) +
+  labs(title = "Liczba klientów wg metody płatności i przedziału wiekowego",
+       x = "Metoda płatności",
+       y = "Liczba klientów",
+       fill = "Przedział wiekowy") +
+  theme_void() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
+
+
+  #wykres 'oceny zakupów a status subskrypcji'
+
+ggplot(data, aes(x = Subscription.Status, y = Review.Rating, fill = Subscription.Status)) +
+  geom_boxplot() +
+  labs(title = "Ocena zakupów a statusu subskrypcji",
+       x = "Status subskrypcji",
+       y = "Ocena zakupów (1-5)") +
+  theme_minimal() +
+  scale_fill_manual(values = c("#66C2A5", "#FC8D62"))
+    #średnio subskrybenci wystawiają wyższe oceny.
+
+
+
+
+
+
 
