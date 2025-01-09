@@ -185,6 +185,46 @@ ggplot(color_summary_w, aes(x = reorder(Color, count), y = count, )) +
   ) +
   theme_minimal()
 
+#kolory
+library(dplyr)
 
+color_mapping <- c(
+  "Indigo" = "blue",
+  "Blue" = "blue",
+  "Cyan" = "blue",
+  "Teal" = "blue",
+  "Turquoise" = "blue",
+  "Purple" = "purple",
+  "Violet" = "purple",
+  "Lavender" = "purple",
+  "Brown"="brown",
+  "Beige"="brown",
+  "White"="white",
+  "Red" = "red",        
+  "Maroon" = "red",
+  "Yellow" = "yellow",
+  "Orange" = "yellow",
+  "Green" = "green",
+  "Olive" = "green",
+  "Pink" = "pink",
+  "Magenta" = "pink",
+  "Peach" = "pink",
+  "Gray" = "gray",
+  "Black" = "gray",
+  "Charcoal" = "gray",
+  "Silver"= "silver",
+  "Gold"="gold"
+)
 
+data_col <- data %>%
+  mutate(Grouped_Color = recode(Color, !!!color_mapping))
+
+test_c <- data_col%>%
+  group_by(Season, Grouped_Color) %>% 
+  summarise(total_count=n()) %>%
+  ungroup()
+test_c %>% 
+  ggplot(aes(Season, total_count, fill=Grouped_Color)) +
+  stat_summary(geom="bar", position="dodge") +
+  xlab("") + ylab("Amount")
 
