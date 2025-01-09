@@ -2,6 +2,10 @@
 library(tidyverse)
 library(moments)
 library(Hmisc)
+library(ggplot2)
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
 
 data <- read.csv("C:/Users/MSI/Desktop/shopping_trends.csv")
 data_w <- data %>%
@@ -184,6 +188,27 @@ ggplot(color_summary_w, aes(x = reorder(Color, count), y = count, )) +
     y = "Liczba"
   ) +
   theme_minimal()
+
+#Analiza skupień
+numeric_data <- data %>% select(where(is.numeric))
+scaled_data <- scale(numeric_data)
+view(numeric_data)
+numeric_data <- numeric_data[, !colnames(numeric_data) %in% "Customer.ID"]
+view(scaled_data)
+
+pca_result <- prcomp(scaled_data, center = TRUE, scale. = TRUE)
+pca_data <- pca_result$x[, 1:2]
+kmeans_result <- kmeans(pca_data, centers = 3, nstart = 25)
+fviz_cluster(kmeans_result, data = pca_data)
+
+#inna naliza skupień (wyszedł znaczek windowsa)
+fit <- kmeans(scaled_data, 5)
+library(cluster)
+
+clusplot(scaled_data, fit$cluster, color=TRUE, shade=TRUE,
+         labels=2, lines=0)
+library(fpc)
+plotcluster(scaled_data, fit$cluster)
 
 #kolory
 library(dplyr)
