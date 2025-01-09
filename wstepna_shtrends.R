@@ -153,7 +153,37 @@ ggplot(data, aes(x = Subscription.Status, y = Review.Rating, fill = Subscription
     #średnio subskrybenci wystawiają wyższe oceny.
 
 
+#najczęściej wybierane kolory przez mężczyzn
+color_summary_m <- data_m %>%
+  group_by(Gender, Color) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  arrange(desc(count))
 
+ggplot(color_summary_m, aes(x = reorder(Color, count), y = count, )) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Kolory najczęściej wybierane przez mężczyzn",
+    x = "Kolor",
+    y = "Liczba"
+  ) +
+  theme_minimal()
+
+#najczęściej wybierane kolory przez mężczyzn
+color_summary_w <- data_w %>%
+  group_by(Gender, Color) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  arrange(desc(count))
+
+ggplot(color_summary_w, aes(x = reorder(Color, count), y = count, )) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  labs(
+    title = "Kolory najczęściej wybierane przez kobiety",
+    x = "Kolor",
+    y = "Liczba"
+  ) +
+  theme_minimal()
 
 
 
