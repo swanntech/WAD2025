@@ -253,3 +253,83 @@ test_c %>%
   stat_summary(geom="bar", position="dodge") +
   xlab("") + ylab("Amount")
 
+# Analiza połączeń sezon-kolor-produkt
+
+# Wybór interesujących kolumn
+selected_data <- data %>%
+  select(Season, Color, Item.Purchased)
+
+# Zliczanie częstości sprzedaży dla kombinacji
+freq_table <- selected_data %>%
+  group_by(Season, Color, Item.Purchased) %>%
+  summarise(Count = n(), .groups = "drop")
+top_combinations <- freq_table %>% 
+  arrange(desc(Count)) %>% 
+  head(20) # Top 20 najczęstszych kombinacji
+print(top_combinations)
+
+# Analiza najpopularniejszych kolorów w sezonach
+popular_colors <- selected_data %>%
+  group_by(Season, Color) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count)) %>%
+  head(15)
+print(popular_colors)
+
+# Analiza najczęściej sprzedawanych przedmiotów w sezonach
+popular_items <- selected_data %>%
+  group_by(Season, Item.Purchased) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  arrange(desc(Count))%>%
+  head(15)
+print(popular_items)
+
+# Wizualizacja: Najpopularniejsze kombinacje
+ggplot(top_combinations, aes(x = reorder(Color, -Count), y = Count, fill = Season)) +
+  geom_bar(stat = "identity", position = "nudge") +
+  scale_fill_manual(values = color_mapping) +
+  labs(title = "Najczęstsze kombinacje kolorów w sezonach",
+       x = "Kolor", y = "Częstość sprzedaży") +
+  theme_minimal()
+
+# Wizualizacja: Popularność kolorów w sezonach
+ggplot(popular_colors, aes(x = Season, y = Count, fill = Color)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = color_mapping) +
+  labs(title = "Popularność kolorów w poszczególnych sezonach",
+       x = "Sezon", y = "Częstość sprzedaży") +
+  theme_minimal()
+
+# Wizualizacja: Popularność przedmiotów w sezonach
+ggplot(popular_items, aes(x = Season, y = Count, fill = Item.Purchased)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Popularność przedmiotów w poszczególnych sezonach",
+       x = "Sezon", y = "Częstość sprzedaży") +
+  theme_minimal()
+
+color_mapping <- c(
+  "Red" = "red", 
+  "Blue" = "blue", 
+  "Green" = "green", 
+  "Yellow" = "yellow", 
+  "Pink" = "pink", 
+  "Black" = "black",
+  "White" = "white",
+  "Gray" = "gray",
+  "Purple" = "purple",
+  "Orange" = "orange",
+  "Brown" = "brown",
+  "Cyan" = "#00FFFF",
+  "Charcoal" = "#36454F",
+  "Peach" = "#FFD3AC",
+  "Violet" = "#EE82EE",
+  "Teal" = "#008080",
+  "Silver" = "#E0E0E0",
+  "Maroon" = "#800000",
+  "Olive" = "#808000",
+  "Turquoise" = "#40E0d0",
+  "Gold" = "#d4af37",
+  "Magenta" = "#ff00ff",
+  "Lavender" = "#d3d3ff",
+  "Indigo" = "#560591"
+)
