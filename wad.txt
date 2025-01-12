@@ -35,7 +35,7 @@ i interpretacja, co z tego wynika
 
 Podział pracy: (uzupełnijcie swoje, ostatecznie się jeszcze przed wysłaniem ugada co i jak) 
 Ania: Eksploracja, wstępna analiza i opis zbioru, grupowanie i redukcja zmiennych, koordynacja projektu (X D musiałam przepraszam ja już tu się śmieje przez łzy przez ten projekt)  
-Emilka: (...), prezentacja 
+Emilka: porządkowanie kodu - wizualnie i pod względem kolejności; wizualne opracowanie prezentacji, prezentacja, analiza poszczególnych zmiennych i niektóre wykresy w ggplot2
 Marta:(...), 
 Zuzia: (...), prezentacja 
 *myślę że na pewno wspomnimy że każdy tak na prawdę w jakimś stopniu robił wszystko przez to ile problemów miałyśmy z tą bazą, i że chciałyśmy żeby każda spróbowała swoich sił w każdym aspekcie tak żeby mieć wiele perspektyw na ostateczną wersję projektu :)) 
