@@ -1,0 +1,41 @@
+Opracowywany zbiór zawiera dane na temat zakupów w pewnym amerykańskim sklepie internetowym na przestrzeni roku. 
+Baza składa się z 19 kolumn:
+Numer ID klienta, Wiek, Płeć, Zakupiony Produkt, Kategoria Produktu, Koszt Produktu (USD), Stan (USA), Rozmiar Produktu, Kolor, Pora roku, Ocena, Status Subskrypcji, Metoda Płatności, Preferowana Metoda Płatności, Typ Dostawy, Użycie Zniżki, Użycie kodu promocyjnego, Liczba poprzednich zakupów, Częstotliwość zakupów.
+Baza wydaje się posiadać wiele istotnych informacji, jednakże w trakcie analizy jej zmiennych napotkałyśmy pewne trudności. 
+Co najważniejsze, niemal wszystkie dane są bardzo wypośrodkowane: na pierwszy rzut oka, w bazie (poza płcią) nie ma żadnych wyróżniających się przypadków, ciężko jest doszukiwać się jakichś zależności. 
+Kolejnym problemem jest duża redundancja danych, oraz niejasność formy pewnych zmiennych.                                                                                                                    
+Przykładowo, kolumny "Użycie Zniżki" oraz "Użycie kodu promocyjnego" są sobie tożsame, w zakresie zmiennej "Częstotliwość" znajdują się różne wartości określające to samo zjawisko. Początkowo interesujące nas oceny produktów najprawdopodobniej są średnią ocen wystawianych przez danego klienta na przestrzeni wszystkich poprzednich zakupów, na temat których nie mamy żadnych informacji, przez co nie jesteśmy wstanie wyciągnąć z tej zmiennej żadnych wniosków.
+
+Koniec użalania (tak naprawdę to nie) przejdźmy do faktów.
+
+Dalszej analizie poddałyśmy następujące zmienne:
+
+Wiek - (tu piękny wykresik rozkładu wieku i rozkład ćwiartkowy) - podział na przedziały wiekowe,
+Płeć - (wykresik) to samo przez się się rozumie,
+Zakupiony produkt - also understandable,
+Kategoria produktu - -""-,
+Koszt Produktu USD - zdecydowałyśmy się na zgrupowanie danych w trzy kategorie na podstawie rozkładu ćwiartkowego w nowej smiennej "Wydatek": Niski ($20-39), Średni($40-60), Wysoki($61-100), 
+Kolor - ze względu na brak informacji o dostępnych kolorach dla poszczególnych produktów zdecydowałyśmy się na zgrupowanie kolorów w szersze kategorie (tu można piękny wykresik kolorystyczny for fun)
+Pora roku - again samo przez się, w sumie można pokazać co i jak się sprzedawało w okresach,
+Payment Method - odrzucenie kolumny z preferowaną metodą płatności ze względu na brak wglądu do poprzednich transakcji klientów, zredukowanie kategorii do: Płatności kartą (debetowa i kredytowa, Przelewem, Serwisem Internetowym (Paypal i Venmo) oraz gotówką. 
+Użycie zniżki - jak wspomniane wyżej, jest to zmienna tożsama z użyciem kodu promocyjnego,
+Liczba poprzednich zakupów - ponownie, ze względu na brak danych o charakterze poprzednich zakupów oraz na bardzo uśrednione wartości w zbiorze, zdecydowałyśmy się na utworzenie kategorii na podstawie rozkładu ćwiartkowego (wykresik?)
+Częstotliwość Zakupów - ponownie, przez redundancję danych konieczne było najpierw zgrupowanie (case Quarterly i every 3 months) a później (wykres częstości dokonywanych zakupów) na podstawie rozkładu ćwiartkowego utworzenie kategorii (rzadko, średnio, często).
+
+
+MODEL
+dlaczego wybrałyśmy mca w sumie? trzeba uzasadnić-
+Przez opisane przez nas już wcześniej problemy związane z bazą, zbudowanie modelu który pozwoliłby nam (w sumie to co? znaleźć jakieś zależności i grupy klientów?). Ostatecznie model ten oparłyśmy na zmiennych:
+Płeć,  Użycie Zniżki, Wydatek, Grupa wiekowa, Metoda płatności, Częstotliwość zakupów oraz Liczba wcześniejszych zakupów.  
+
+tu piękny model wierzę że jest
+
+i interpretacja, co z tego wynika
+
+
+Podział pracy: (uzupełnijcie swoje, ostatecznie się jeszcze przed wysłaniem ugada co i jak) 
+Ania: Eksploracja, wstępna analiza i opis zbioru, grupowanie i redukcja zmiennych, koordynacja projektu (X D musiałam przepraszam ja już tu się śmieje przez łzy przez ten projekt)  
+Emilka: (...), prezentacja 
+Marta:(...), 
+Zuzia: (...), prezentacja 
+*myślę że na pewno wspomnimy że każdy tak na prawdę w jakimś stopniu robił wszystko przez to ile problemów miałyśmy z tą bazą, i że chciałyśmy żeby każda spróbowała swoich sił w każdym aspekcie tak żeby mieć wiele perspektyw na ostateczną wersję projektu :)) 
