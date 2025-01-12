@@ -13,8 +13,14 @@ data_base <- read.csv("C:/Users/MSI/Desktop/shopping_trends.csv")
 summary(data_base)
 str(data_base)
 
-data <- data_base
+#Baza zawiera dane o 3900 klientach
+#Wszyscy znajdują się w wieku 18-70
+#Znacząco więcej mężczyzn niż kobiet, 2652 do 1248
+#Średnia cena produktów: $60
+#Ceny kupowanych produktów w zakresie $20-$100, jednak brak możliwości sprawdzenia dokładnie zachowań klientów w tym zakresie ze względu na brak danych o ich poprzednich transakcjach  
+#Oceny produktów w skali 1-5, z zebranych danych oceniane od 2.5 do 5.0 - niejasne jak zliczane są oceny, najprawdopodobniej jest to średnia ocen zostawianych przez klienta, jednak w bazie nie mamy wglądu do poprzednich jego zakupów
 
+data <- data_base
 
 data %>% 
   group_by(Frequency.of.Purchases) %>% 
@@ -408,6 +414,7 @@ fviz_mca_var(wynikMCA4,
 fviz_mca_biplot(wynikMCA4, label = "all", 
                 col.var = "blue", col.ind = "red", 
                 title = "MCA Biplot")
+
 doMCA5 <- data %>%
   select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases.N, Previous.Purchases.N)
 
