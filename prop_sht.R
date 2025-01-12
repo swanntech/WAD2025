@@ -408,3 +408,31 @@ fviz_mca_var(wynikMCA4,
 fviz_mca_biplot(wynikMCA4, label = "all", 
                 col.var = "blue", col.ind = "red", 
                 title = "MCA Biplot")
+doMCA5 <- data %>%
+  select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases.N, Previous.Purchases.N)
+
+wynikMCA5 <- MCA(doMCA5)
+fviz_screeplot(wynikMCA5, addlabels = TRUE)
+summary(wynikMCA5)
+plot.MCA(wynikMCA5)
+fviz_mca_ind(wynikMCA5, repel = T)
+
+fviz_contrib(wynikMCA5, choice = "var", axes = 1:2, top = 10)
+
+fviz_mca_var(wynikMCA5, axes = c(1, 2), col.var = "contrib", gradient.cols = c("lightblue", "purple", "red"))
+fviz_mca_biplot(wynikMCA5, label = "all", 
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot") #wygląda sensownie
+fviz_mca_var(wynikMCA5, 
+             col.var = "red", 
+             title = "MCA - Variables")
+#ostatecznie: wybór analizy MCA ze zmiennymi:
+#Płeć(Gender), Zastosowanie zniżki(Discount.Applied),
+#Wydatki(Spending) - zgrupowanie danych w trzy kategorie na podstawie rozkładu ćwiartkowego,
+#Grupa wiekowa(AgeGroup) zgrupowanie danych w cztery kategorie na podstawie rozkładu ćwiartkowego,
+#Metoda Płatności(Payment.Method) - zgrupowanie danych w cztery kategorie na podstawie działania formy płatności,
+#Częstotliwość Zakupów(Frequency.of.Purchases.N) - zmienna jakościowa, dane zgrupowane w celu uniknięcia redundancji a dodatkowo zredukowane do trzech najważniejszych kategorii,
+#Ilość poprzednich zakupów(Previous.Purchases.N) -  zgrupowanie danych w cztery kategorie na podstawie rozkładu ćwiartkowego
+
+MCA_final <- doMCA5
+wynikMCAfinal <- MCA(MCA_final)
