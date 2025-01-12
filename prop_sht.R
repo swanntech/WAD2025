@@ -9,7 +9,7 @@ library(factoextra)
 data_base <- read.csv("C:/Users/MSI/Desktop/shopping_trends.csv")
 
 
-#eksploracja i modyfikacja danych
+#🟥🟥🟥eksploracja i modyfikacja danych
 summary(data_base)
 str(data_base)
 
@@ -22,6 +22,14 @@ str(data_base)
 
 data <- data_base
 
+#🔵podział na płeć
+data_w <- data %>%
+  filter(Gender=="Female")
+data_m <- data %>%
+  filter(Gender=="Male")
+
+
+  #🔵analiza częstotliwości zakupów
 data %>% 
   group_by(Frequency.of.Purchases) %>% 
   summarise(count=n()) %>% 
@@ -42,6 +50,10 @@ purchasef_summary <- data %>%
   summarise(count = n(), .groups = "drop") %>% 
   ungroup()
 purchasef_summary$Częstotliwość <- purchasef_summary$Frequency.of.Purchases
+
+
+  #📈wykres czestotliwości zakupów
+
 ggplot(purchasef_summary, aes(x = reorder(Częstotliwość, Frequency.of.Purchases), y = count, fill=Częstotliwość)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
@@ -49,7 +61,6 @@ ggplot(purchasef_summary, aes(x = reorder(Częstotliwość, Frequency.of.Purchas
     x = "Częstotliwość",
     y = "Liczba"
   )
-#wykres częstości zakupów ^^
 
 
 data$Frequency.of.Purchases.N <- data$Frequency.of.Purchases
@@ -68,6 +79,9 @@ data %>%
   summarise(count=n()) %>% 
   ungroup()
 
+#====================================================================================================================
+
+#🔵metoda płatności
 
 data %>% 
   group_by(Payment.Method) %>% 
@@ -88,18 +102,23 @@ data %>%
   summarise(count=n()) %>% 
   ungroup()
 
+#====================================================================================================================
 
+#🔵wiek a ilość zakupów
 summary(data$Age)
 data$AgeGroup <- cut(data$Age, breaks=c(0, 30, 45, 55, 70), labels=c("18-30", "31-45", "46-55", "55+"))
 
 summary(data$Purchase.Amount..USD.)
 data$Spending <- cut(data$Purchase.Amount..USD., breaks=c(0, 39, 60, 100), labels=c("Low", "Medium", "High"))
 
-#wykres ilości zakupów w różnych grupach wiekowych
 purchaseg_summary <- data %>%
   group_by(AgeGroup) %>%
   summarise(count = n(), .groups = "drop") %>% 
   ungroup()
+
+
+#📈wykres ilości zakupów w różnych grupach wiekowych
+
 ggplot(purchaseg_summary, aes(x = reorder(AgeGroup, AgeGroup), y = count, fill=AgeGroup)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
@@ -107,20 +126,72 @@ ggplot(purchaseg_summary, aes(x = reorder(AgeGroup, AgeGroup), y = count, fill=A
     x = "Wiek",
     y = "Liczba")
 
-data <- data[ -c(1,7:8,11:12,14,16,18) ]
 
+#📈wykres ilości zakupów w różnych grupach wiekowych (przeskok co około 10 lat) 
+# różnice wynikające z braku podzielności przedziału przez 10 (min przeskok 9 lat, max przeskok 11 lat)
+
+ bins <- c(18, 30, 40, 50, 60, 70)
+      labels <- c("18-29", "30-39", "40-49", "50-59", "60-70")
+      data$Age.Group <- cut(data$Age, breaks = bins, labels = labels, right = FALSE)
+      
+      age_group_counts <- as.data.frame(table(data$Age.Group))
+      colnames(age_group_counts) <- c("Age.Group", "Count")
+      
+      library(ggplot2)
+      
+      ggplot(age_group_counts, aes(x = Age.Group, y = Count, fill = Age.Group)) +
+        geom_bar(stat = "identity", color = "black") +
+        scale_fill_manual(values = colorRampPalette(c("lightblue", "navy"))(length(labels))) +
+        labs(title = "Liczba klientów w przedziałach wiekowych", 
+             x = "Wiek", 
+             y = "Liczba klientów") +
+        theme_minimal() +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#====================================================================================================================
+
+#🔵analiza ilości poprzednich zakupów
+
+data <- data[ -c(1,7:8,11:12,14,16,18) ]
 
 data %>% 
   group_by(Previous.Purchases) %>% 
   summarise(count=n()) %>% 
   ungroup()
 summary(data$Previous.Purchases)
+
+#📈wykres ilości poprzednich zakupów
 qplot(x=Previous.Purchases, data= data)
 data$Previous.Purchases.N <- cut(data$Previous.Purchases, breaks=c(0, 15, 25, 35, 50), labels=c("1-15", "16-25", "26-35", "36-50"))
 data %>% 
   group_by(Previous.Purchases.N) %>% 
   summarise(count=n()) %>% 
   ungroup()
+
+#====================================================================================================================
+
+#🔵Pora roku a ilość dokonanych zakupów
+data %>% 
+  group_by(Season) %>%  
+  summarise(total_count = n()) %>%  
+  ungroup() 
+
+  #⚫najwięcej zakupów klienci robią: wiosną
+
+
+#🔵Pora roku a ilość wydanych przez klientów pieniędzy
+data %>% 
+  group_by(Season) %>%  
+  summarise(total_spent = sum(Purchase.Amount..USD.)) %>%  
+  ungroup() 
+  
+  #⚫najwięcej klienci wydają jesienią
+
+
+
+#====================================================================================================================
+
+#🔵zgrupowanie kolorów dla przejrzystości wykresów i łatwiejszej analizy
 
 color_mapping <- c(
   "Indigo" = "niebieski",
@@ -153,68 +224,15 @@ color_mapping <- c(
 data <- data %>%
   mutate(Color = recode(Color, !!!color_mapping))
 
-#Pora roku a ilość dokonanych zakupów
-data %>% 
-  group_by(Season) %>%  
-  summarise(total_count = n()) %>%  
-  ungroup() 
-#najwięcej zakupów klienci robią: wiosną
+#--------------------------------------------------
 
-#Pora roku a ilość wydanych przez klientów pieniędzy
-data %>% 
-  group_by(Season) %>%  
-  summarise(total_spent = sum(Purchase.Amount..USD.)) %>%  
-  ungroup() #najwięcej klienci wydają jesienią
-
-# wykresy
-
-# rozkład wieku
-ggplot(data, aes(x = Age)) +
-  geom_histogram(bins = 53, fill = "#009999", color = "black") +
-  geom_density(aes(y = ..count..), color = "#660099", size = 1) +
-  labs(
-    title = "Rozkład wieku klientów",
-    x = "Wiek",
-    y = "Liczba klientów"
-  ) 
-
-# rozkład płci
-ggplot(data, aes(x = Gender, fill = Gender)) +
-  geom_bar(color = "black") +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, color = "black", size = 5) +
-  labs(
-    title = "Liczba klientów według płci",
-    x = "Płeć",
-    y = "Liczba klientów"
-  )
-# rozkład kwoty zakupu dla grup wiekowych
-ggplot(data, aes(x = AgeGroup, y = Purchase.Amount..USD., fill = AgeGroup)) +
-  geom_boxplot() +
-  labs(
-    title = "Rozkład kwoty zakupu dla grup wiekowych",
-    x = "Grupy wiekowe",
-    y = "Kwota zakupu"
-  )
-
-# rozkład ilości poprzednich zakupów dla grup wiekowych
-ggplot(data, aes(x = AgeGroup, y = Previous.Purchases, fill = AgeGroup)) +
-  geom_boxplot() +
-  labs(
-    title = "Rozkład ilości poprzednich zakupów dla grup wiekowych",
-    x = "Grupy wiekowe",
-    y = "Kwota zakupu"
-  )
-#podział na płeć
-data_w <- data %>%
-  filter(Gender=="Female")
-data_m <- data %>%
-  filter(Gender=="Male")
-
-#trendy w kolorach u mężczyzn
+#🔵trendy w kolorach u mężczyzn
 color_summary_m <- data_m %>%
   group_by(Gender, Color) %>%
   summarise(count = n(), .groups = "drop")
 
+
+#📈 Wykres trendów w kolorach u mężczyzn
 ggplot(color_summary_m, aes(x = reorder(Color, count), y = count, fill=Color )) +
   geom_bar(stat = "identity", position = "dodge") +
   coord_flip() +
@@ -236,11 +254,15 @@ ggplot(color_summary_m, aes(x = reorder(Color, count), y = count, fill=Color )) 
                              "gold",
                              "yellow"))
 
-#trendy w kolorach u kobiet
+#--------------------------------------------------
+
+#🔵trendy w kolorach u kobiet
 color_summary_w <- data_w %>%
   group_by(Gender, Color) %>%
-  summarise(count = n(), .groups = "drop")
+  summarise(count = n(), .groups = "drop")\
 
+
+#📈Wykres w trendach kolorów u kobiet
 ggplot(color_summary_w, aes(x = reorder(Color, count), y = count, fill=Color )) +
   geom_bar(stat = "identity", position = "dodge") +
   coord_flip() +
@@ -263,7 +285,60 @@ ggplot(color_summary_w, aes(x = reorder(Color, count), y = count, fill=Color )) 
                              "yellow"))
 
 
-#testy
+
+#====================================================================================================================
+
+#🟦📈🟦 WYKRESY
+
+
+#📈rozkład wieku
+ggplot(data, aes(x = Age)) +
+  geom_histogram(bins = 53, fill = "#009999", color = "black") +
+  geom_density(aes(y = ..count..), color = "#660099", size = 1) +
+  labs(
+    title = "Rozkład wieku klientów",
+    x = "Wiek",
+    y = "Liczba klientów"
+  ) 
+
+#--------------------------------------------------
+
+#📈rozkład płci
+ggplot(data, aes(x = Gender, fill = Gender)) +
+  geom_bar(color = "black") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, color = "black", size = 5) +
+  labs(
+    title = "Liczba klientów według płci",
+    x = "Płeć",
+    y = "Liczba klientów"
+  )
+
+#--------------------------------------------------
+
+#📈rozkład kwoty zakupu dla grup wiekowych
+ggplot(data, aes(x = AgeGroup, y = Purchase.Amount..USD., fill = AgeGroup)) +
+  geom_boxplot() +
+  labs(
+    title = "Rozkład kwoty zakupu dla grup wiekowych",
+    x = "Grupy wiekowe",
+    y = "Kwota zakupu"
+  )
+
+#--------------------------------------------------
+
+#📈rozkład ilości poprzednich zakupów dla grup wiekowych
+ggplot(data, aes(x = AgeGroup, y = Previous.Purchases, fill = AgeGroup)) +
+  geom_boxplot() +
+  labs(
+    title = "Rozkład ilości poprzednich zakupów dla grup wiekowych",
+    x = "Grupy wiekowe",
+    y = "Kwota zakupu"
+  )
+
+#====================================================================================================================
+
+#🟨🟨🟨TESTY 
+
 table(data$Spending)
 data %>% 
   select(Spending) %>% 
@@ -336,7 +411,13 @@ chisq.test(table(data$Gender, data$Previous.Purchases.N)) #p-value = 0.037
 chisq.test(table(data$AgeGroup, data$Previous.Purchases.N)) #p-value = 0.23
 chisq.test(table(data$Frequency.of.Purchases.N, data$Spending)) #p-value = 0.45
 
-#doMCA
+
+#====================================================================================================================
+
+#🟪🟪🟪 MODELE MCA 🟪🟪🟪
+
+
+#🟪MCA1
 doMCA1 <- data %>%
   select(Discount.Applied,Previous.Purchases, Gender, AgeGroup)
 
@@ -365,6 +446,9 @@ fviz_mca_var(wynikMCA1,
              col.var = "red", 
              title = "MCA - Variables")
 
+#--------------------------------------------------
+
+#🟪MCA2
 doMCA2 <- data %>%
   select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases, Previous.Purchases.N)
 
@@ -384,6 +468,10 @@ fviz_mca_var(wynikMCA2,
              col.var = "red", 
              title = "MCA - Variables")
 
+#--------------------------------------------------
+
+#🟪MCA3
+
 doMCA3 <- data %>%
   select(Discount.Applied,Previous.Purchases.N, Gender, AgeGroup)
 wynikMCA3 <- MCA(doMCA3)
@@ -398,6 +486,10 @@ fviz_mca_biplot(wynikMCA3, label = "all",
 fviz_mca_var(wynikMCA3, 
              col.var = "red", 
              title = "MCA - Variables")
+
+#--------------------------------------------------
+
+#🟪MCA4
 
 doMCA4 <- data %>%
   select(Discount.Applied,Previous.Purchases.N, Gender, AgeGroup, Frequency.of.Purchases.N)
@@ -414,6 +506,10 @@ fviz_mca_var(wynikMCA4,
 fviz_mca_biplot(wynikMCA4, label = "all", 
                 col.var = "blue", col.ind = "red", 
                 title = "MCA Biplot")
+
+#--------------------------------------------------
+
+#🟪MCA5
 
 doMCA5 <- data %>%
   select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases.N, Previous.Purchases.N)
@@ -441,5 +537,12 @@ fviz_mca_var(wynikMCA5,
 #Częstotliwość Zakupów(Frequency.of.Purchases.N) - zmienna jakościowa, dane zgrupowane w celu uniknięcia redundancji a dodatkowo zredukowane do trzech najważniejszych kategorii,
 #Ilość poprzednich zakupów(Previous.Purchases.N) -  zgrupowanie danych w cztery kategorie na podstawie rozkładu ćwiartkowego
 
+#--------------------------------------------------
+
+#🟪Finalny model MCA
+
 MCA_final <- doMCA5
 wynikMCAfinal <- MCA(MCA_final)
+
+
+
