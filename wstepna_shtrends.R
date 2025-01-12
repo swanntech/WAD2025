@@ -1,4 +1,4 @@
-#wstępna analiza
+#📅📅📅wstępna analiza
 library(tidyverse)
 library(moments)
 library(Hmisc)
@@ -18,6 +18,8 @@ summary(data_m)
 summary(data_w)
 stats <- describe(data)
 
+#---------------------------------------------------------------------------------------------------------------------------------------
+# UWAGI ❗
 #Baza zawiera dane o 3900 klientach
 #Wszyscy znajdują się w wieku 18-70
 #Znacząco więcej mężczyzn niż kobiet, 2652 do 1248
@@ -26,46 +28,56 @@ stats <- describe(data)
 #Oceny produktów w skali 1-5, z zebranych danych oceniane od 2.5 do 5.0
 #Osób z subskrypcją: 1053
 
+#---------------------------------------------------------------------------------------------------------------------------------------
 
+# ANALIZA POJEDYNCZYCH ZMIENNYCH
+#==============================================
+#🔴🟠🟡🟢🔵🟣🟤⚫⚪🟥🟧🟨🟩🟦🟪🟫⬛⬜🔶🔷 to potem usune xd
+
+#🔵Status subskrypcji
 data_s <- data %>%
   filter(Subscription.Status=="Yes")
 data_ns <- data %>%
   filter(Subscription.Status=="No")
 
-#Metody płatności:
+#🔵Metody płatności:
+    #wybrana metoda płatności
 data_p <- data %>% 
   group_by(Payment.Method) %>% 
   summarise(total_count=n()) %>%
   ungroup()
+    #preferowana metoda płatności
 data_p1 <- data %>% 
   group_by(Preferred.Payment.Method) %>% 
   summarise(total_count=n()) %>%
   ungroup()
+    #wybrana vs preferowana metoda płatności
 data_p2 <- data %>% 
   group_by(Payment.Method,Preferred.Payment.Method) %>% 
   summarise(total_count=n()) %>%
   ungroup()
 
-#Metody dostawy: 
+#🔵Metody dostawy: 
 data_d <- data %>% 
   group_by(Shipping.Type) %>% 
   summarise(total_count=n()) %>%
   ungroup()
 
-#Częstotliwość zakupów:
+#🔵Częstotliwość zakupów:
 data_f <- data %>% 
   group_by(Frequency.of.Purchases) %>% 
   summarise(total_count=n()) %>%
   ungroup()
 
-#Wcześniejszych zakupów:
-#Od 1 do 50
+#🔵Wcześniejszych zakupów:
+
 data_prev <- data %>% 
   group_by(Previous.Purchases) %>% 
   summarise(total_count=n()) %>%
-  ungroup()
+  ungroup() 
+    #⚫Od 1 do 50
 
-#Kategorie produktu:
+#🔵Kategorie produktu:
 data_c <- data %>% 
   group_by(Category,Gender) %>% 
   summarise(total_count=n()) %>%
