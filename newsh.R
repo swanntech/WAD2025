@@ -241,7 +241,9 @@ fviz_contrib(wynikMCA1, choice = "var", axes = 2, top = 10)
 fviz_contrib(wynikMCA1, choice = "var", axes = 1:3, top = 10)
 fviz_screeplot(wynikMCA1, addlabels = TRUE)
 fviz_mca_var(wynikMCA1, axes = c(1, 2), col.var = "contrib", gradient.cols = c("blue", "green", "red"))
-
+fviz_mca_biplot(wynikMCA1, label = "all", 
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot")
 
 doMCA2 <- data %>%
   select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases, Previous.Purchases.N)
@@ -252,22 +254,36 @@ summary(wynikMCA2)
 plot.MCA(wynikMCA2)
 fviz_mca_ind(wynikMCA2, repel = T)
 
-fviz_contrib(wynikMCA2, choice = "var", axes = 1:2, top = 10)
-fviz_contrib(wynikMCA2, choice = "var", axes = 1, top = 10)
-fviz_contrib(wynikMCA2, choice = "var", axes = 2, top = 10)
 fviz_contrib(wynikMCA2, choice = "var", axes = 1:3, top = 10)
 
 fviz_mca_var(wynikMCA2, axes = c(1, 2), col.var = "contrib", gradient.cols = c("lightblue", "purple", "red"))
-
+fviz_mca_biplot(wynikMCA2, label = "all", 
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot") #wygląda sensownie
 
 doMCA3 <- data %>%
   select(Discount.Applied,Previous.Purchases.N, Gender, AgeGroup)
 wynikMCA3 <- MCA(doMCA3)
+summary(wynikMCA3)
+plot.MCA(wynikMCA3)
 fviz_screeplot(wynikMCA3, addlabels = TRUE)
 fviz_mca_var(wynikMCA3, axes = c(1, 2), col.var = "contrib", gradient.cols = c("lightblue", "purple", "red"))
+fviz_mca_ind(wynikMCA3, repel = T)
+fviz_mca_biplot(wynikMCA3, label = "all", 
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot")
+
 
 doMCA4 <- data %>%
   select(Discount.Applied,Previous.Purchases.N, Gender, AgeGroup, Frequency.of.Purchases.N)
 wynikMCA4 <- MCA(doMCA4)
+summary(wynikMCA4)
+plot.MCA(wynikMCA4)
 fviz_screeplot(wynikMCA4, addlabels = TRUE)
 fviz_mca_var(wynikMCA4, axes = c(1, 2), col.var = "contrib", gradient.cols = c("lightblue", "purple", "red"))
+fviz_mca_ind(wynikMCA4, repel = T)
+
+
+fviz_mca_biplot(wynikMCA4, label = "all", 
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot")
