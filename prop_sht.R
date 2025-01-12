@@ -27,7 +27,7 @@ data_w <- data %>%
   filter(Gender=="Female")
 data_m <- data %>%
   filter(Gender=="Male")
-
+  #⚫ zdecydowana przewaga mężczyzn wśród klientów; 2652 mężczyzn i 1248 kobiet
 
   #🔵analiza częstotliwości zakupów
 data %>% 
@@ -61,7 +61,9 @@ ggplot(purchasef_summary, aes(x = reorder(Częstotliwość, Frequency.of.Purchas
     x = "Częstotliwość",
     y = "Liczba"
   )
-
+    #⚫Najwięcej klientów robi zakupy co 3 miesiące (~ około 4 razy do roku)
+    #⚫Najmniej klientów robi zakupy co tydzień, co miesiąc oraz raz do roku
+    #⚫najmniej klientów robiących zakupy w skrajnych częstotliwościach ?
 
 data$Frequency.of.Purchases.N <- data$Frequency.of.Purchases
 data<- data %>% 
@@ -102,6 +104,8 @@ data %>%
   summarise(count=n()) %>% 
   ungroup()
 
+  #⚫ najczęściej wybieraną formą płatności jest: karta
+
 #====================================================================================================================
 
 #🔵wiek a ilość zakupów
@@ -126,9 +130,10 @@ ggplot(purchaseg_summary, aes(x = reorder(AgeGroup, AgeGroup), y = count, fill=A
     x = "Wiek",
     y = "Liczba")
 
+    #⚫najmniej zakupów robią osoby w przedziale wiekowym 46-55
 
 #📈wykres ilości zakupów w różnych grupach wiekowych (przeskok co około 10 lat) 
-# różnice wynikające z braku podzielności przedziału przez 10 (min przeskok 9 lat, max przeskok 11 lat)
+# różnice wynikające z braku podzielności przedziału na 10 (min przeskok 9 lat, max przeskok 11 lat)
 
  bins <- c(18, 30, 40, 50, 60, 70)
       labels <- c("18-29", "30-39", "40-49", "50-59", "60-70")
@@ -167,6 +172,7 @@ data %>%
   group_by(Previous.Purchases.N) %>% 
   summarise(count=n()) %>% 
   ungroup()
+#⚫ najwięcej poprzednich zakupów mieściło się między 1-15 (1179 klientów) oraz 36-50 (1147 klientów)
 
 #====================================================================================================================
 
