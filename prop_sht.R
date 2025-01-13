@@ -111,6 +111,14 @@ data %>%
 #🔵wiek a ilość zakupów
 summary(data$Age)
 data$AgeGroup <- cut(data$Age, breaks=c(0, 30, 45, 55, 70), labels=c("18-30", "31-45", "46-55", "55+"))
+ageplot <- data%>%
+  group_by(AgeGroup) %>% 
+  summarise(total_count=n()) %>%
+  ungroup()
+ageplot %>% 
+  ggplot(aes(AgeGroup, total_count, fill=AgeGroup)) +
+  stat_summary(geom="bar", position="dodge") +
+  xlab("Grupa wiekowa") + ylab("Liczba osób") + ggtitle("Liczba osób w poszczególnych grupach wiekowych")
 
 summary(data$Purchase.Amount..USD.)
 data$Spending <- cut(data$Purchase.Amount..USD., breaks=c(0, 39, 60, 100), labels=c("Low", "Medium", "High"))
@@ -547,8 +555,36 @@ fviz_mca_var(wynikMCA5,
 
 #🟪Finalny model MCA
 
-MCA_final <- doMCA5
-wynikMCAfinal <- MCA(MCA_final)
+MCA_final <- data %>%
+  select(Gender, Discount.Applied, Spending, AgeGroup, Payment.Method,Frequency.of.Purchases.N, Previous.Purchases.N)
 
+wynikMCAfinal <- MCA(doMCA5)
+get_eigenvalue(wynikMCAfinal)
+fviz_screeplot(wynikMCAfinal, addlabels = TRUE, ylim = c(0, 45))
+fviz_mca_var(wynikMCAfinal, choice = "mca.cor", 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+fviz_mca_biplot(wynikMCAfinal, label = "var", repel = TRUE,
+                col.var = "blue", col.ind = "red", 
+                title = "MCA Biplot")
+fviz_mca_var(wynikMCAfinal, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
 
+fviz_ellipses(wynikMCAfinal, c("Discount.Applied", "Gender"), repel = TRUE,
+              geom = "point")
+res.desc <- dimdesc(wynikMCAfinal, axes = c(1,2))
+res.desc[[1]]
+res.desc[[2]]
+
+fviz_mca_ind(wynikMCAfinal, 
+             label = "none",
+             habillage = "Spending", 
+             addEllipses = TRUE, ellipse.type = "confidence",
+             ggtheme = theme_minimal()) 
+fviz_mca_ind(wynikMCAfinal, 
+             label = "none", 
+             habillage = "Payment.Method", 
+             addEllipses = TRUE, ellipse.type = "confidence",
+             ggtheme = theme_minimal())
 
